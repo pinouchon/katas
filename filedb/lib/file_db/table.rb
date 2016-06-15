@@ -1,8 +1,9 @@
 module FileDb
   class Table
-    def initialize(table_name, table_data)
+    def initialize(table_name, table_data, db)
       @table_name = table_name
       @table_data = table_data
+      @db = db
     end
 
     def select(params)
@@ -20,6 +21,16 @@ module FileDb
 
       result
 
+    end
+    
+    def insert(row)
+      @table_data << row
+      @db.persist(@table_name, @table_data)
+    end
+    
+    def delete(params)
+      @table_data = @table_data.reject{ |row| row['id'] == params[:where][:id] }
+      @db.persist(@table_name, @table_data)
     end
   end
 end
